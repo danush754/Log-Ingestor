@@ -1,6 +1,9 @@
 from flask import Flask, request, jsonify
+from flask_sqlalchemy import SQLAlchemy
 
 app  = Flask(__name__)
+app.config["SQL_DB_URI"] = 'sqlite://logs.db'
+db = SQLAlchemy(app)
 
 logs = []
 
