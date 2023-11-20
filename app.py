@@ -1,9 +1,11 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 
 app  = Flask(__name__)
-app.config["SQL_DB_URI"] = 'sqlite://logs.db'
+app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///logs.db'
 db = SQLAlchemy(app)
+migrate = Migrate(app,db)
 
 logs = []
 
@@ -24,6 +26,21 @@ def ingest():
 @app.route('/logs', methods=['GET'])
 def get_logs():
     return jsonify({'logs' : logs})
+
+
+class Log(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    level = db.Column(db.String(50))
+    message = db.Column(db.Text)
+    resoureID = db.Column(db.String(50))
+    timestamp = db.Column(db.DateTime)
+    traceID = db.Column(db.String(50))
+    spanID = db.Column(db.String(50))
+    commit = db.Column(db.String(50))
+    parentResourceId = db.Column(db.String(50))
+
+    def __repr__(self):
+        return f"Log {self.id} : {self.message}"
         
         
     
