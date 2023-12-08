@@ -1,32 +1,12 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from datetime import datetime
 
 app  = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///logs.db'
 db = SQLAlchemy(app)
 migrate = Migrate(app,db)
-
-logs = []
-
-@app.route('/ingest', methods=['POST'])
-def ingest():
-    try:
-
-        log_data = request.json 
-        if not isinstance(log_data,dict):
-            return jsonify({'error' : 'Invalid Json format'}),400
-        
-        logs.append(log_data)
-
-        return jsonify({'message' : 'Log ingestion successfull !'})
-    except Exception as e:
-        return jsonify({'error':str(e)}),500
-
-@app.route('/logs', methods=['GET'])
-def get_logs():
-    return jsonify({'logs' : logs})
-
 
 class Log(db.Model):
     id = db.Column(db.Integer, primary_key = True)
@@ -42,6 +22,29 @@ class Log(db.Model):
     def __repr__(self):
         return f"Log {self.id} : {self.message}"
         
+
+logs = []
+
+@app.route('/ingest', methods=['POST'])
+def ingest():
+    try:
+
+        log_data = request.json 
+        if not isinstance(log_data,dict):
+            return jsonify({'error' : 'Invalid Json format'}),400
+        
+        
+
+        return jsonify({'message' : 'Log ingestion successfull !'}),200
+    except Exception as e:
+        return jsonify({'error':str(e)}),500
+
+@app.route('/logs', methods=['GET'])
+def get_logs():
+    return jsonify({'logs' : logs})
+
+
+
         
     
 
